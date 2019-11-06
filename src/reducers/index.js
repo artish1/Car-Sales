@@ -17,11 +17,27 @@ export const initialState = {
   ]
 };
 
+const getFeatureById = (state, id) => {
+  const featuresFound = state.additionalFeatures.filter(
+    feature => feature.id === id
+  );
+  if (featuresFound.length >= 1) return featuresFound[0];
+
+  return null;
+};
+
 export const reducer = (state = initialState, action) => {
   console.log("Reducerrrr");
   switch (action.type) {
     case ADD_FEATURE:
-      return state;
+      const feature = getFeatureById(state, action.payload); //Id comes from payload
+      if (!feature) return state; //If we did not find a feature by that id, return original state
+
+      if (state.car.features.includes(feature)) return state; //If feature already added, return state
+      return {
+        ...state,
+        car: { ...state.car, features: [...state.car.features, feature] }
+      };
     case REMOVE_FEATURE:
       return state;
     default:
