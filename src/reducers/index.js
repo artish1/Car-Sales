@@ -26,29 +26,42 @@ const getFeatureById = (state, id) => {
   return null;
 };
 
+const calculateAdditionalPrice = features => {
+  const newAdditionalPrice = features.reduce(
+    (accumulator, feature) => accumulator + feature.price,
+    0
+  );
+  return newAdditionalPrice;
+};
+
 export const reducer = (state = initialState, action) => {
-  console.log("Reducerrrr");
   switch (action.type) {
     case ADD_FEATURE:
       const feature = getFeatureById(state, action.payload); //Id comes from payload
-      if (!feature) return state; //If we did not find a feature by that id, return original state
-
       if (state.car.features.includes(feature)) return state; //If feature already added, return state
-
-      const newFeatures = [...state.car.features, feature];
-      const newAdditionalPrice = newFeatures.reduce(
-        (accumulator, feature) => accumulator + feature.price,
-        0
-      );
-      const newState = {
+      const newFeatures = [...state.car.features, feature]; //Create new features array with our added feature.
+      return {
         ...state,
-        additionalPrice: newAdditionalPrice,
+        additionalPrice: calculateAdditionalPrice(newFeatures), //Also add calculated additional prices from added feature.
         car: { ...state.car, features: newFeatures }
       };
 
-      return newState;
     case REMOVE_FEATURE:
-      return state;
+      //Reduce array to that of only items NOT removed.
+      const newRemovedFeatures = state.car.features.reduce(
+        (accumulator, feature) => {
+          if (feature.id === action.payload) return [...accumulator];
+          return [...accumulator, feature];
+        },
+        []
+      );
+
+      return {
+        ...state,
+        additionalPrice: calculateAdditionalPrice(newRemovedFeatures), //Re-calculate additional prices from change of features
+        car: { ...state.car, features: newRemovedFeatures }
+      };
+
     default:
       return state;
   }
