@@ -34,10 +34,19 @@ export const reducer = (state = initialState, action) => {
       if (!feature) return state; //If we did not find a feature by that id, return original state
 
       if (state.car.features.includes(feature)) return state; //If feature already added, return state
-      return {
+
+      const newFeatures = [...state.car.features, feature];
+      const newAdditionalPrice = newFeatures.reduce(
+        (accumulator, feature) => accumulator + feature.price,
+        0
+      );
+      const newState = {
         ...state,
-        car: { ...state.car, features: [...state.car.features, feature] }
+        additionalPrice: newAdditionalPrice,
+        car: { ...state.car, features: newFeatures }
       };
+
+      return newState;
     case REMOVE_FEATURE:
       return state;
     default:
