@@ -1,15 +1,24 @@
-import React from 'react';
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import AddedFeature from "./AddedFeature";
 
-import AddedFeature from './AddedFeature';
+//Actions
+import { removeFeature } from "../actions/index";
 
-const AddedFeatures = props => {
+const AddedFeatures = () => {
+  const car = useSelector(state => state.car);
+  const dispatch = useDispatch();
   return (
     <div className="content">
       <h6>Added features:</h6>
-      {props.car.features.length ? (
+      {car.features.length ? (
         <ol type="1">
-          {props.car.features.map(item => (
-            <AddedFeature key={item.id} feature={item} />
+          {car.features.map(item => (
+            <AddedFeature
+              handleRemove={() => dispatch(removeFeature(item.id))}
+              key={item.id}
+              feature={item}
+            />
           ))}
         </ol>
       ) : (
