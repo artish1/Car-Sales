@@ -6,10 +6,6 @@ import AdditionalFeatures from "./components/AdditionalFeatures";
 import Total from "./components/Total";
 
 const App = () => {
-  const buyItem = item => {
-    // dipsatch an action here to add an item
-  };
-
   return (
     <div className="boxes">
       <div className="box">
